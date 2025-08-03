@@ -21,10 +21,17 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${geist.variable}`}>
-      <body>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <TRPCReactProvider>{children}</TRPCReactProvider>
+    <html lang="en" suppressHydrationWarning className={geist.variable}>
+      <body className="min-h-screen">
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+          <TRPCReactProvider>
+            <div className="flex min-h-screen flex-col">
+              {/* Page-level content renders the actual Header to avoid duplicates */}
+              <main className="flex flex-1 overflow-hidden">
+                {children}
+              </main>
+            </div>
+          </TRPCReactProvider>
         </ThemeProvider>
       </body>
     </html>

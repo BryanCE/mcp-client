@@ -16,8 +16,10 @@ import {
 } from "~/components/ui/dropdown-menu";
 
 function ThemeToggle() {
-  const { theme, setTheme } = useTheme();
-  const isDark = theme === "dark";
+  const { resolvedTheme, setTheme } = useTheme();
+  // Use resolvedTheme to avoid SSR/client mismatch when defaultTheme="system"
+  const isDark = resolvedTheme === "dark";
+
   return (
     <Button
       variant="secondary"
