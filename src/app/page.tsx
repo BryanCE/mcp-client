@@ -89,7 +89,9 @@ export default function HomePage() {
             maxSize={34}
             className="min-w-0 min-h-0"
           >
-            <LeftNav />
+            <div className="h-full w-full min-w-0 overflow-hidden">
+              <LeftNav />
+            </div>
           </ResizablePanel>
 
           <ResizableHandle className="bg-border" />
@@ -108,12 +110,14 @@ export default function HomePage() {
           <ResizableHandle className="bg-border" />
 
           <ResizablePanel
-            defaultSize={22}
-            minSize={16}
+            defaultSize={32}
+            minSize={22}
             maxSize={40}
             className="min-w-0 min-h-0"
           >
-            <RightPanel />
+            <div className="h-full w-full min-w-0 overflow-hidden">
+              <RightPanel />
+            </div>
           </ResizablePanel>
         </ResizablePanelGroup>
       </div>
