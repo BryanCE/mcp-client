@@ -72,16 +72,13 @@ function MessageListBase({
   }, [isAtBottom, scrollToBottom]);
 
   return (
-    <div className="relative h-full">
-      <ScrollArea className={className}>
-        {/* ScrollArea renders a wrapper; we need the viewport node to track scroll.
-            shadcn/ui exposes a data-radix-scroll-area-viewport attribute we can query in effect.
-            We attach a ref after mount. */}
+    <div className="relative h-full min-h-0 overflow-hidden">
+      {/* Ensure the ScrollArea itself fills available height and only it scrolls */}
+      <ScrollArea className={["h-full w-full", className].filter(Boolean).join(" ")}>
+        {/* Capture the viewport element to track scroll position */}
         <div
-          // This wrapper allows us to capture the actual viewport element reference on mount
           ref={(node) => {
             if (!node) return;
-            // Find the viewport within this ScrollArea
             const viewport = node.querySelector('[data-radix-scroll-area-viewport]') as HTMLDivElement | null;
             if (viewport && viewportRef.current !== viewport) {
               viewportRef.current = viewport;
@@ -95,10 +92,8 @@ function MessageListBase({
           ))}
 
           {isStreaming && streamingMessage && (
-            // AI response row only (user input is always MessageBubble)
             <AIResponse message={streamingMessage} isStreaming className="mt-1" />
           )}
-
 
           {loadingCount > 0 &&
             Array.from({ length: loadingCount }).map((_, idx) => (

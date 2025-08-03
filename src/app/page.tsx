@@ -17,14 +17,17 @@ export default function HomePage() {
   const [rightOpen, setRightOpen] = React.useState(false);
 
   return (
-    <div className="flex min-h-[100svh] w-full flex-col">
+    <div className="flex h-full w-full flex-col">
       {/* Header rendered at page-level */}
       <Header />
 
       {/* Mobile layout: stack content; hide side panels by default */}
       <div className="flex-1 min-h-0 min-w-0 lg:hidden">
-        <div className="flex h-full w-full overflow-hidden">
-          <ChatInterface />
+        {/* Make the main content area a flex column so only ChatInterface center scrolls */}
+        <div className="flex h-full w-full min-h-0 min-w-0 flex-col">
+          <div className="flex-1 min-h-0 min-w-0 overflow-hidden">
+            <ChatInterface />
+          </div>
         </div>
 
         {/* Mobile bottom navigation with Sheets for LeftNav and RightPanel */}
@@ -102,6 +105,7 @@ export default function HomePage() {
             maxSize={68}
             className="min-w-0 min-h-0"
           >
+            {/* Center panel: ensure only inner message list scrolls, not the whole app */}
             <div className="flex h-full w-full min-w-0 min-h-0 overflow-hidden">
               <ChatInterface />
             </div>

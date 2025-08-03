@@ -28,7 +28,7 @@ export default function RootLayout({
           <TRPCReactProvider>
             {/* Page-level is responsible for rendering Header to prevent duplicates and layout-specific variants */}
             <div className="flex min-h-screen flex-col">
-              <main className="flex flex-1 overflow-hidden">
+              <main className="flex flex-1 min-h-0 overflow-hidden">
                 {children}
               </main>
             </div>

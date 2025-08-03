@@ -58,7 +58,7 @@ export default function ChatInterface() {
   return (
     <div className="flex h-full min-w-0 flex-1 flex-col text-sm">
       {/* Provider Indicator */}
-      <Card className="m-2 mb-1 sm:m-3 sm:mb-2">
+      <Card className="m-2 mb-1 sm:m-3 sm:mb-2 shrink-0">
         <CardContent className="flex items-center justify-between gap-2 p-2">
           <div className="flex min-w-0 items-center gap-2">
             <Bot className="h-4 w-4 shrink-0" />
@@ -82,7 +82,8 @@ export default function ChatInterface() {
       </Card>
 
       {/* Messages Area */}
-      <div className="flex-1 min-h-0 min-w-0 px-2 sm:px-3">
+      <div className="flex-1 min-h-0 min-w-0 px-2 sm:px-3 overflow-hidden">
+        {/* Only the message list scrolls; container is constrained by min-h-0 in parent flex */}
         <MessageList
           messages={messages}
           isStreaming={isStreaming}
@@ -93,8 +94,8 @@ export default function ChatInterface() {
         />
       </div>
 
-      {/* Input Area */}
-      <Card className="m-2 mt-1 sm:m-3 sm:mt-2">
+      {/* Input Area - non-scrolling footer within this flex column */}
+      <Card className="m-2 mt-1 sm:m-3 sm:mt-2 shrink-0">
         <CardContent className="p-2 pt-0 sm:p-3">
           <div className="flex min-w-0 items-start gap-2">
             <Textarea
