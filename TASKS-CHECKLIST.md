@@ -18,15 +18,14 @@
   ```
 
 ### Theme Setup
-- [ ] Replace `src/app/globals.css` with provided Dracula theme
-- [ ] Create `src/components/providers/ThemeProvider.tsx`
-- [ ] Update root layout with ThemeProvider wrapper
+- [x] Create `src/components/providers/ThemeProvider.tsx`
+- [x] Update root layout with ThemeProvider wrapper
 - [ ] Test dark/light mode switching
 
 ## Phase 2: UI Components (Frontend Only)
 
 ### Layout Components
-- [ ] **Header Component** (`src/components/layout/Header.tsx`)
+- [x] **Header Component** (`src/components/layout/Header.tsx`)
   - [ ] Logo area with MCP Client branding
   - [ ] Theme toggle button (Moon/Sun icons)
   - [ ] Status indicators (connection badges)
