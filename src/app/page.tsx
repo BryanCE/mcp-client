@@ -102,7 +102,7 @@ export default function HomePage() {
             maxSize={68}
             className="min-w-0 min-h-0"
           >
-            <div className="flex h-full w-full overflow-hidden">
+            <div className="flex h-full w-full min-w-0 min-h-0 overflow-hidden">
               <ChatInterface />
             </div>
           </ResizablePanel>

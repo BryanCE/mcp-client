@@ -6,7 +6,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "~/
 import { Button } from "~/components/ui/button";
 import { Badge } from "~/components/ui/badge";
 import { Separator } from "~/components/ui/separator";
-import { Plus, Server, Bot } from "lucide-react";
+import { Plus, Server, Bot, Settings } from "lucide-react";
 
 export default function LeftNav() {
   return (
@@ -25,9 +25,12 @@ export default function LeftNav() {
           className="space-y-3 overflow-visible"
         >
           <AccordionItem value="mcp" className="border rounded-md overflow-visible">
-            <AccordionTrigger className="px-3 min-w-0 overflow-visible">
-              <span className="truncate">📁 MCP Servers</span>
-            </AccordionTrigger>
+<AccordionTrigger className="px-3 min-w-0 overflow-visible">
+  <div className="flex items-center gap-2 min-w-0">
+    <Server className="h-4 w-4 shrink-0" />
+    <span className="truncate">MCP Servers</span>
+  </div>
+</AccordionTrigger>
             <AccordionContent className="px-3 pb-3 overflow-visible">
               <div className="space-y-2">
                 <div className="w-full min-w-0">
@@ -53,9 +56,12 @@ export default function LeftNav() {
           </AccordionItem>
 
           <AccordionItem value="ai" className="border rounded-md overflow-visible">
-            <AccordionTrigger className="px-3 min-w-0 overflow-visible">
-              <span className="truncate">🤖 AI Providers</span>
-            </AccordionTrigger>
+<AccordionTrigger className="px-3 min-w-0 overflow-visible">
+  <div className="flex items-center gap-2 min-w-0">
+    <Bot className="h-4 w-4 shrink-0" />
+    <span className="truncate">AI Providers</span>
+  </div>
+</AccordionTrigger>
             <AccordionContent className="px-3 pb-3 overflow-visible">
               <div className="space-y-2">
                 <div className="w-full min-w-0">
@@ -81,9 +87,12 @@ export default function LeftNav() {
           </AccordionItem>
 
           <AccordionItem value="settings" className="border rounded-md overflow-visible">
-            <AccordionTrigger className="px-3 min-w-0 overflow-visible">
-              <span className="truncate">⚙️ Settings</span>
-            </AccordionTrigger>
+<AccordionTrigger className="px-3 min-w-0 overflow-visible">
+  <div className="flex items-center gap-2 min-w-0">
+    <Settings className="h-4 w-4 shrink-0" />
+    <span className="truncate">Settings</span>
+  </div>
+</AccordionTrigger>
             <AccordionContent className="px-3 pb-3 overflow-visible">
               <div className="space-y-2 text-sm text-muted-foreground">
                 <div className="flex items-center gap-2 min-w-0">

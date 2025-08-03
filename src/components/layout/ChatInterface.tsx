@@ -60,29 +60,33 @@ export default function ChatInterface() {
   );
 
   return (
-    <div className="flex h-full flex-col">
+    <div className="flex h-full min-w-0 flex-1 flex-col text-sm">
       {/* Provider Indicator */}
-      <Card className="m-4 mb-2">
-        <CardContent className="flex items-center justify-between p-4">
-          <div className="flex items-center space-x-2">
-            <Bot className="h-5 w-5" />
-            <Select value={selectedProvider} onValueChange={setSelectedProvider}>
-              <SelectTrigger className="w-[220px]">
-                <SelectValue placeholder="Select AI Provider" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="openai">OpenAI</SelectItem>
-                <SelectItem value="anthropic">Anthropic</SelectItem>
-                <SelectItem value="openrouter">OpenRouter</SelectItem>
-              </SelectContent>
-            </Select>
+      <Card className="m-2 mb-1 sm:m-3 sm:mb-2">
+        <CardContent className="flex items-center justify-between gap-2 p-2">
+          <div className="flex min-w-0 items-center gap-2">
+            <Bot className="h-4 w-4 shrink-0" />
+            <div className="min-w-0">
+              <Select value={selectedProvider} onValueChange={setSelectedProvider}>
+                <SelectTrigger size="sm" className="w-[160px] sm:w-[200px]">
+                  <SelectValue placeholder="Select AI provider" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="openai">OpenAI</SelectItem>
+                  <SelectItem value="anthropic">Anthropic</SelectItem>
+                  <SelectItem value="openrouter">OpenRouter</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
-          <Badge variant="outline">{connectionStatus}</Badge>
+          <Badge variant="outline" className="h-6 shrink-0 whitespace-nowrap px-2 py-0 text-xs">
+            {connectionStatus}
+          </Badge>
         </CardContent>
       </Card>
 
       {/* Messages Area */}
-      <ScrollArea className="flex-1 px-4">
+      <ScrollArea className="flex-1 min-w-0 px-2 sm:px-3">
         <div className="space-y-4 pb-4">
           {messages.length === 0 ? (
             <div className="mt-6 text-center text-sm text-muted-foreground">
@@ -92,7 +96,7 @@ export default function ChatInterface() {
             messages.map((message) =>
               message.role === "user" ? (
                 <div key={message.id} className="flex justify-end">
-                  <Card className="max-w-[80%] bg-primary text-primary-foreground">
+                  <Card className="max-w-[85%] bg-primary text-primary-foreground">
                     <CardContent className="p-3">
                       <p className="whitespace-pre-wrap">{message.content}</p>
                     </CardContent>
@@ -100,7 +104,7 @@ export default function ChatInterface() {
                 </div>
               ) : (
                 <div key={message.id} className="flex justify-start">
-                  <Card className="max-w-[80%]">
+                  <Card className="max-w-[85%]">
                     <CardContent className="p-3">
                       <p className="whitespace-pre-wrap">{message.content}</p>
                       {message.toolCalls && message.toolCalls.length > 0 && (
@@ -122,35 +126,39 @@ export default function ChatInterface() {
       </ScrollArea>
 
       {/* Input Area */}
-      <Card className="m-4 mt-2">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-sm text-muted-foreground">Message</CardTitle>
-        </CardHeader>
-        <CardContent className="p-4 pt-0">
-          <div className="flex space-x-2">
+      <Card className="m-2 mt-1 sm:m-3 sm:mt-2">
+        <CardContent className="p-2 pt-0 sm:p-3">
+          <div className="flex min-w-0 items-start gap-2">
             <Textarea
               placeholder="Type your message..."
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
-              className="min-h-[40px] flex-1 resize-none"
+              className="min-h-[40px] flex-1 min-w-0 resize-none"
               onKeyDown={handleKeyDown}
             />
-            <Button onClick={handleSend} disabled={!inputValue.trim() || isLoading} size="icon">
+            <Button
+              onClick={handleSend}
+              disabled={!inputValue.trim() || isLoading}
+              size="icon"
+              className="shrink-0"
+              aria-label="Send message"
+              title="Send (Ctrl+Enter)"
+            >
               {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
             </Button>
           </div>
-          <div className="mt-2 flex items-center justify-between text-sm text-muted-foreground">
-            <div className="flex space-x-2">
-              <Button variant="ghost" size="sm">
+          <div className="mt-1 flex items-center justify-between text-xs text-muted-foreground">
+            <div className="flex flex-wrap gap-1">
+              <Button variant="ghost" size="sm" className="h-7 px-2">
                 <Paperclip className="mr-1 h-4 w-4" />
                 Attach
               </Button>
-              <Button variant="ghost" size="sm">
+              <Button variant="ghost" size="sm" className="h-7 px-2">
                 <Wrench className="mr-1 h-4 w-4" />
                 MCP Tools
               </Button>
             </div>
-            <span>Ctrl+Enter to send</span>
+            <span className="whitespace-nowrap">Ctrl+Enter to send</span>
           </div>
         </CardContent>
       </Card>
