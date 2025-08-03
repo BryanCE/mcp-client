@@ -8,18 +8,16 @@ import { Textarea } from "~/components/ui/textarea";
 import { Button } from "~/components/ui/button";
 import { Badge } from "~/components/ui/badge";
 import { Loader2, Send, Paperclip, Wrench, Bot } from "lucide-react";
+import type { ChatMessage } from "~/types/chat";
+import { MessageList } from "~/components/chat/MessageList";
 
-type Message = {
-  id: string;
-  role: "user" | "assistant";
-  content: string;
-  toolCalls?: Array<{ id: string; name: string }>;
-};
 
 export default function ChatInterface() {
   const [selectedProvider, setSelectedProvider] = useState<string>("");
   const [connectionStatus] = useState<string>("Disconnected");
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [isStreaming, setIsStreaming] = useState<boolean>(false);
+  const [streamingMessage, setStreamingMessage] = useState<ChatMessage | null>(null);
   const [inputValue, setInputValue] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -29,22 +27,20 @@ export default function ChatInterface() {
     setIsLoading(true);
 
     // Add user message
-    const userMsg: Message = { id: crypto.randomUUID(), role: "user", content };
+    const userMsg: ChatMessage = { id: crypto.randomUUID(), role: "user", content };
     setMessages((prev) => [...prev, userMsg]);
 
-    // Simulate assistant streaming placeholder (no fake content persisted)
-    const assistantMsg: Message = {
-      id: crypto.randomUUID(),
-      role: "assistant",
-      content: "…",
-    };
-    setMessages((prev) => [...prev, assistantMsg]);
+    // Start streaming placeholder (no fake completion content persisted)
+    setStreamingMessage({ id: crypto.randomUUID(), role: "assistant", content: "", status: "streaming" });
+    setIsStreaming(true);
 
     // Clear input
     setInputValue("");
 
-    // End loading after a short delay (placeholder for real streaming)
+    // Simulated end of streaming phase
     setTimeout(() => {
+      setIsStreaming(false);
+      setStreamingMessage(null);
       setIsLoading(false);
     }, 400);
   }, [inputValue]);
@@ -86,44 +82,16 @@ export default function ChatInterface() {
       </Card>
 
       {/* Messages Area */}
-      <ScrollArea className="flex-1 min-w-0 px-2 sm:px-3">
-        <div className="space-y-4 pb-4">
-          {messages.length === 0 ? (
-            <div className="mt-6 text-center text-sm text-muted-foreground">
-              Welcome to MCP Client. Select a provider and start chatting.
-            </div>
-          ) : (
-            messages.map((message) =>
-              message.role === "user" ? (
-                <div key={message.id} className="flex justify-end">
-                  <Card className="max-w-[85%] bg-primary text-primary-foreground">
-                    <CardContent className="p-3">
-                      <p className="whitespace-pre-wrap">{message.content}</p>
-                    </CardContent>
-                  </Card>
-                </div>
-              ) : (
-                <div key={message.id} className="flex justify-start">
-                  <Card className="max-w-[85%]">
-                    <CardContent className="p-3">
-                      <p className="whitespace-pre-wrap">{message.content}</p>
-                      {message.toolCalls && message.toolCalls.length > 0 && (
-                        <div className="mt-2 flex flex-wrap gap-1">
-                          {message.toolCalls.map((tool) => (
-                            <Badge key={tool.id} variant="secondary" className="text-xs">
-                              {tool.name}
-                            </Badge>
-                          ))}
-                        </div>
-                      )}
-                    </CardContent>
-                  </Card>
-                </div>
-              ),
-            )
-          )}
-        </div>
-      </ScrollArea>
+      <div className="flex-1 min-h-0 min-w-0 px-2 sm:px-3">
+        <MessageList
+          messages={messages}
+          isStreaming={isStreaming}
+          streamingMessage={streamingMessage ?? undefined}
+          showTypingIndicator={!isStreaming && isLoading}
+          loadingCount={isLoading && messages.length === 0 ? 1 : 0}
+          className="h-full"
+        />
+      </div>
 
       {/* Input Area */}
       <Card className="m-2 mt-1 sm:m-3 sm:mt-2">
