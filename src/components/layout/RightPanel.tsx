@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { useState } from "react";
-import { ResizablePanel } from "~/components/ui/resizable";
+import { ResizablePanel, ResizablePanelGroup } from "~/components/ui/resizable";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { ScrollArea } from "~/components/ui/scroll-area";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
@@ -22,11 +22,14 @@ export default function RightPanel() {
     [],
   );
 
+  // Ensure ResizablePanel is always rendered within a ResizablePanelGroup to satisfy library requirements
   return (
-    <ResizablePanel defaultSize={25} minSize={20} maxSize={40}>
-      <div className="h-full border-l bg-muted/10">
+    <ResizablePanelGroup direction="horizontal" className="h-full w-full">
+      <ResizablePanel defaultSize={25} minSize={20} maxSize={40}>
+        <div className="h-full border-l bg-muted/10">
         <Tabs defaultValue="tools" className="flex h-full flex-col">
-          <TabsList className="mx-4 mt-4 grid w-full grid-cols-4">
+          <div className="mx-4 mt-4 overflow-x-auto">
+            <TabsList className="w-max min-w-full flex-nowrap">
             <TabsTrigger value="tools">
               <Wrench className="mr-1 h-4 w-4" />
               Tools
@@ -43,7 +46,8 @@ export default function RightPanel() {
               <Zap className="mr-1 h-4 w-4" />
               Perf
             </TabsTrigger>
-          </TabsList>
+            </TabsList>
+          </div>
 
           <TabsContent value="tools" className="flex-1 px-4">
             <ScrollArea className="h-full">
@@ -154,14 +158,14 @@ export default function RightPanel() {
             </ScrollArea>
           </TabsContent>
 
-          <TabsContent value="performance" className="flex-1 px-4">
+          <TabsContent value="performance" className="min-w-0 flex-1 px-4">
             <ScrollArea className="h-full">
               <div className="space-y-4 py-4">
                 <Card>
-                  <CardHeader>
+                  <CardHeader className="p-3 sm:p-4">
                     <CardTitle className="text-sm">Performance</CardTitle>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="p-3 sm:p-4">
                     <p className="text-sm text-muted-foreground">No data yet.</p>
                   </CardContent>
                 </Card>
@@ -169,7 +173,8 @@ export default function RightPanel() {
             </ScrollArea>
           </TabsContent>
         </Tabs>
-      </div>
-    </ResizablePanel>
+        </div>
+      </ResizablePanel>
+    </ResizablePanelGroup>
   );
 }

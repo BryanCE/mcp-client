@@ -10,137 +10,74 @@
 }
 
 :root {
-  --radius:
-    0.625rem;
+  --radius: 0.625rem;
+  --background: #f8f8f2;
+  --foreground: #000000;
   --button-shadow: rgba(0, 0, 0, 0.1);
-  --card:
-    oklch(1 0 0);
-  --card-foreground:
-    oklch(0.145 0 0);
-  --popover:
-    oklch(1 0 0);
-  --popover-foreground:
-    oklch(0.145 0 0);
-  --primary:
-    oklch(0.205 0 0);
-  --primary-foreground:
-    oklch(0.985 0 0);
-  --secondary:
-    oklch(0.97 0 0);
-  --secondary-foreground:
-    oklch(0.205 0 0);
-  --muted:
-    oklch(0.97 0 0);
-  --muted-foreground:
-    oklch(0.556 0 0);
-  --accent:
-    oklch(0.97 0 0);
-  --accent-foreground:
-    oklch(0.205 0 0);
-  --destructive:
-    oklch(0.577 0.245 27.325);
-  --border:
-    oklch(0.922 0 0);
-  --input:
-    oklch(0.922 0 0);
-  --ring:
-    oklch(0.708 0 0);
-  --chart-1:
-    oklch(0.646 0.222 41.116);
-  --chart-2:
-    oklch(0.6 0.118 184.704);
-  --chart-3:
-    oklch(0.398 0.07 227.392);
-  --chart-4:
-    oklch(0.828 0.189 84.429);
-  --chart-5:
-    oklch(0.769 0.188 70.08);
-  --sidebar:
-    oklch(0.985 0 0);
-  --sidebar-foreground:
-    oklch(0.145 0 0);
-  --sidebar-primary:
-    oklch(0.205 0 0);
-  --sidebar-primary-foreground:
-    oklch(0.985 0 0);
-  --sidebar-accent:
-    oklch(0.97 0 0);
-  --sidebar-accent-foreground:
-    oklch(0.205 0 0);
-  --sidebar-border:
-    oklch(0.922 0 0);
-  --sidebar-ring:
-    oklch(0.708 0 0);
-  --background:
-    oklch(1 0 0);
-  --foreground:
-    oklch(0.145 0 0);
+  --card: #f8f8f2;
+  --card-foreground: #000000;
+  --popover: #f8f8f2;
+  --popover-foreground: #000000;
+  --primary: #bd93f9;
+  --primary-foreground: #ffffff;
+  --secondary: #44475a;
+  --secondary-foreground: #000000;
+  --muted: #e9ecf9;
+  --muted-foreground: #000000;
+  --accent: #8be9fd;
+  --accent-foreground: #282a36;
+  --destructive: #ff5555;
+  --border: #44475a;
+  --input: #44475a;
+  --ring: #bd93f9;
+  --chart-1: #ff79c6;
+  --chart-2: #50fa7b;
+  --chart-3: #8be9fd;
+  --chart-4: #ffb86c;
+  --chart-5: #bd93f9;
+  --sidebar: #f8f8f2;
+  --sidebar-foreground: #000000;
+  --sidebar-primary: #bd93f9;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #8be9fd;
+  --sidebar-accent-foreground: #000000;
+  --sidebar-border: #44475a;
+  --sidebar-ring: #bd93f9;
 }
 
 .dark {
-  --background:
-    oklch(0.145 0 0);
-  --foreground:
-    oklch(0.985 0 0);
+  --background: #282a36;
+  --foreground: #f8f8f2;
   --button-shadow: rgba(255, 255, 255, 0.2);
-  --card:
-    oklch(0.205 0 0);
-  --card-foreground:
-    oklch(0.985 0 0);
-  --popover:
-    oklch(0.205 0 0);
-  --popover-foreground:
-    oklch(0.985 0 0);
-  --primary:
-    oklch(0.922 0 0);
-  --primary-foreground:
-    oklch(0.205 0 0);
-  --secondary:
-    oklch(0.269 0 0);
-  --secondary-foreground:
-    oklch(0.985 0 0);
-  --muted:
-    oklch(0.269 0 0);
-  --muted-foreground:
-    oklch(0.708 0 0);
-  --accent:
-    oklch(0.269 0 0);
-  --accent-foreground:
-    oklch(0.985 0 0);
-  --destructive:
-    oklch(0.704 0.191 22.216);
-  --border:
-    oklch(1 0 0 / 10%);
-  --input:
-    oklch(1 0 0 / 15%);
-  --ring:
-    oklch(0.556 0 0);
-  --chart-1:
-    oklch(0.488 0.243 264.376);
-  --chart-2:
-    oklch(0.696 0.17 162.48);
-  --chart-3:
-    oklch(0.769 0.188 70.08);
-  --chart-4:
-    oklch(0.627 0.265 303.9);
-  --chart-5:
-    oklch(0.645 0.246 16.439);
-  --sidebar:
-    oklch(0.205 0 0);
-  --sidebar-foreground:
-    oklch(0.985 0 0);
-  --sidebar-primary:
-    oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground:
-    oklch(0.985 0 0);
-  --sidebar-accent:
-    oklch(0.269 0 0);
-  --sidebar-accent-foreground:
-    oklch(0.985 0 0);
-  --sidebar-border:
-    oklch(1 0 0 / 10%);
-  --sidebar-ring:
-    oklch(0.556 0 0);
+  --card: #44475a;
+  --card-foreground: #f8f8f2;
+  --popover: #44475a;
+  --popover-foreground: #f8f8f2;
+  --primary: #bd93f9;
+  --primary-foreground: #282a36;
+  --secondary: #6272a4;
+  --secondary-foreground: #f8f8f2;
+  --muted: #44475a;
+  --muted-foreground: #a7b0d3;
+  --accent: #83c7d6;
+  --accent-foreground: #282a36;
+  --destructive: #ff5555;
+  --border: #6272a4;
+  --input: #44475a;
+  --ring: #bd93f9;
+  --chart-1: #ff79c6;
+  --chart-2: #50fa7b;
+  --chart-3: #8be9fd;
+  --chart-4: #ffb86c;
+  --chart-5: #bd93f9;
+  --sidebar: #44475a;
+  --sidebar-foreground: #f8f8f2;
+  --sidebar-primary: #bd93f9;
+  --sidebar-primary-foreground: #282a36;
+  --sidebar-accent: #8be9fd;
+  --sidebar-accent-foreground: #282a36;
+  --sidebar-border: #6272a4;
+  --sidebar-ring: #bd93f9;
 }
 
 @theme inline {
@@ -187,6 +124,26 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+
+  /* Hydration-safe theme icon visibility (no flash) */
+  /* Works with next-themes attribute="class" (Tailwind's .dark class on html) */
+  /* Show the icon for the NEXT theme to toggle to:
+     - In light mode, show moon (dark target)
+     - In dark mode, show sun (light target) */
+  .theme-show-light {
+    /* Sun icon should show in dark mode (to indicate switching to light) */
+    display: none;
+  }
+  .theme-show-dark {
+    /* Moon icon should show in light mode (to indicate switching to dark) */
+    display: inline-block;
+  }
+  .dark .theme-show-light {
+    display: inline-block;
+  }
+  .dark .theme-show-dark {
+    display: none;
   }
 }
 
