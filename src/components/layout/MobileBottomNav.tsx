@@ -25,7 +25,7 @@ export default function MobileBottomNav({ className }: MobileBottomNavProps) {
       }
       aria-label="Mobile Navigation"
     >
-      <div className="mx-auto max-w-screen-lg px-3 py-2">
+      <div className="mx-auto max-w-screen-lg px-3 pt-2 pb-6">
         <div className="grid grid-cols-3 gap-2">
           {/* LeftNav Sheet trigger */}
           <Sheet open={leftOpen} onOpenChange={setLeftOpen}>

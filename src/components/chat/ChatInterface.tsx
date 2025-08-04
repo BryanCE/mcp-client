@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
 import { ScrollArea } from "~/components/ui/scroll-area";
@@ -20,6 +20,7 @@ export default function ChatInterface() {
   const [streamingMessage, setStreamingMessage] = useState<ChatMessage | null>(null);
   const [inputValue, setInputValue] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const handleSend = useCallback(() => {
     const content = inputValue.trim();
@@ -42,6 +43,8 @@ export default function ChatInterface() {
       setIsStreaming(false);
       setStreamingMessage(null);
       setIsLoading(false);
+      // Return focus to the input after message is sent
+      textareaRef.current?.focus();
     }, 400);
   }, [inputValue]);
 
@@ -99,6 +102,7 @@ export default function ChatInterface() {
         <CardContent className="p-2 pt-0 sm:p-3">
           <div className="flex min-w-0 items-start gap-2">
             <Textarea
+              ref={textareaRef}
               placeholder="Type your message..."
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
