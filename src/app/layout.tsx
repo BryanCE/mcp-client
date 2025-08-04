@@ -25,14 +25,11 @@ export default function RootLayout({
       <body className="min-h-screen">
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <TRPCReactProvider>
-            {/* Page-level is responsible for rendering Header to prevent duplicates and layout-specific variants */}
             <div className="flex min-h-screen flex-col">
               <main className="flex flex-1 min-h-0 overflow-hidden">
                 {children}
               </main>
             </div>
-            {/* Do NOT render MobileBottomNav at root: it contains RightPanel which uses ResizablePanel and must live within a ResizablePanelGroup.
-               It will be rendered by pages that have the correct context (e.g., home page). */}
           </TRPCReactProvider>
         </ThemeProvider>
       </body>
