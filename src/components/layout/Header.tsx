@@ -1,7 +1,6 @@
 "use client";
 
 import * as React from "react";
-import { useEffect } from "react";
 import Link from "next/link";
 import { useTheme } from "next-themes";
 import { Button } from "~/components/ui/button";
@@ -17,10 +16,6 @@ import {
 } from "~/components/ui/dropdown-menu";
 
 function ThemeToggle() {
-  // Use a no-flash approach per next-themes docs:
-  // 1) Don't conditionally render the element
-  // 2) Render both icons and hide the inactive one using CSS tied to the theme class
-  // This avoids hydration mismatch and prevents flash on reload.
   const { resolvedTheme, setTheme } = useTheme();
   const isDark = resolvedTheme === "dark";
 

@@ -3,7 +3,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import { EventEmitter } from 'events';
 import { watch, type FSWatcher } from 'fs';
-import { MCPConfigurationSchema, MCPServerConfigSchema, type MCPConfiguration, type MCPServerConfig } from '~/types/mcp-config';
+import { MCPConfigurationSchema, MCPServerConfigSchema, type GlobalSettings, type MCPConfiguration, type MCPServerConfig } from '~/types';
 
 export class MCPConfigManager extends EventEmitter {
   private configPath: string;
@@ -12,7 +12,7 @@ export class MCPConfigManager extends EventEmitter {
 
   constructor(configPath?: string) {
     super();
-    this.configPath = configPath || path.join(process.cwd(), 'mcp-config.json');
+    this.configPath = configPath ?? path.join(process.cwd(), 'mcp-config.json');
     this.config = { mcpServers: {} };
   }
 
@@ -25,7 +25,7 @@ export class MCPConfigManager extends EventEmitter {
   async loadConfig(): Promise<MCPConfiguration> {
     try {
       const configData = await fs.readFile(this.configPath, 'utf-8');
-      const parsedConfig = JSON.parse(configData);
+      const parsedConfig: unknown = JSON.parse(configData);
       
       // Validate configuration
       const validatedConfig = MCPConfigurationSchema.parse(parsedConfig);
@@ -34,7 +34,7 @@ export class MCPConfigManager extends EventEmitter {
       console.log(`Loaded MCP configuration with ${Object.keys(this.config.mcpServers).length} servers`);
       return this.config;
     } catch (error) {
-      if ((error as any).code === 'ENOENT') {
+      if (isNodeENOENT(error)) {
         console.log('No configuration file found, creating default config');
         await this.createDefaultConfig();
         return this.config;
@@ -76,16 +76,19 @@ export class MCPConfigManager extends EventEmitter {
 
   private async watchConfig(): Promise<void> {
     try {
-      this.configWatcher = watch(this.configPath, async (eventType: string) => {
+      // Avoid returning a Promise from FS watch callback to satisfy no-misused-promises
+      this.configWatcher = watch(this.configPath, (eventType: string) => {
         if (eventType === 'change') {
-          console.log('Configuration file changed, reloading...');
-          try {
-            await this.loadConfig();
-            this.emit('configChanged', this.config);
-          } catch (error) {
-            console.error('Error reloading configuration:', error);
-            this.emit('configError', error);
-          }
+          void (async () => {
+            console.log('Configuration file changed, reloading...');
+            try {
+              await this.loadConfig();
+              this.emit('configChanged', this.config);
+            } catch (error) {
+              console.error('Error reloading configuration:', error);
+              this.emit('configError', error);
+            }
+          })();
         }
       });
     } catch (error) {
@@ -147,11 +150,11 @@ export class MCPConfigManager extends EventEmitter {
     );
   }
 
-  async updateGlobalSettings(settings: Partial<MCPConfiguration['globalSettings']>): Promise<void> {
+  async updateGlobalSettings(settings: Partial<GlobalSettings>): Promise<void> {
     this.config.globalSettings = {
-      ...this.config.globalSettings,
+      ...(this.config.globalSettings ?? {}),
       ...settings
-    };
+    } as GlobalSettings;
     
     // Validate updated config
     MCPConfigurationSchema.parse(this.config);
@@ -177,18 +180,18 @@ export class MCPConfigManager extends EventEmitter {
   }
 
   async exportConfig(exportPath?: string): Promise<string> {
-    const exportFilePath = exportPath || path.join(process.cwd(), `mcp-config-export-${Date.now()}.json`);
+    const exportFilePath = exportPath ?? path.join(process.cwd(), `mcp-config-export-${Date.now()}.json`);
     const configData = JSON.stringify(this.config, null, 2);
     await fs.writeFile(exportFilePath, configData, 'utf-8');
     return exportFilePath;
   }
 
-  async importConfig(importPath: string, merge: boolean = false): Promise<void> {
+  async importConfig(importPath: string, merge = false): Promise<void> {
     const importData = await fs.readFile(importPath, 'utf-8');
-    const importedConfig = JSON.parse(importData);
+    const importedConfig: unknown = JSON.parse(importData);
     
     // Validate imported configuration
-    const validatedConfig = MCPConfigurationSchema.parse(importedConfig);
+    const validatedConfig: MCPConfiguration = MCPConfigurationSchema.parse(importedConfig);
     
     if (merge) {
       // Merge with existing configuration
@@ -211,6 +214,11 @@ export class MCPConfigManager extends EventEmitter {
     await this.saveConfig();
     this.emit('configImported', this.config);
   }
+}
+
+// NodeJS fs/promises errors use NodeJS.ErrnoException interface (code?: string)
+function isNodeENOENT(err: unknown): err is NodeJS.ErrnoException & { code: 'ENOENT' } {
+  return !!err && typeof err === 'object' && 'code' in err && (err as { code?: unknown }).code === 'ENOENT';
 }
 
 // ============================================================================

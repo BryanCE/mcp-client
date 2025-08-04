@@ -1,18 +1,18 @@
 // services/mcp-server-manager.ts
-import { spawn, ChildProcess } from 'child_process';
+import { spawn, type ChildProcess } from 'child_process';
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js';
 import { SSEClientTransport } from '@modelcontextprotocol/sdk/client/sse.js';
 import type { Transport } from '@modelcontextprotocol/sdk/shared/transport.js';
-import type { MCPServerConfig, ServerStatus } from '~/types/mcp-config';
+import type { MCPServerConfig, ServerStatus } from '~/types';
 import type { MCPConfigManager } from './mcp-config-manager';
 import EventEmitter from 'events';
 
 export class MCPServerManager extends EventEmitter {
-  private servers: Map<string, ChildProcess> = new Map();
-  private clients: Map<string, Client> = new Map();
-  private transports: Map<string, Transport> = new Map();
-  private serverStatus: Map<string, ServerStatus> = new Map();
+  private servers: Map<string, ChildProcess> = new Map<string, ChildProcess>();
+  private clients: Map<string, Client> = new Map<string, Client>();
+  private transports: Map<string, Transport> = new Map<string, Transport>();
+  private serverStatus: Map<string, ServerStatus> = new Map<string, ServerStatus>();
   private configManager: MCPConfigManager;
 
   constructor(configManager: MCPConfigManager) {
@@ -20,9 +20,9 @@ export class MCPServerManager extends EventEmitter {
     this.configManager = configManager;
     
     // Listen for configuration changes
-    this.configManager.on('serverAdded', (server) => this.handleServerAdded(server));
-    this.configManager.on('serverUpdated', (id, server) => this.handleServerUpdated(id, server));
-    this.configManager.on('serverRemoved', (id) => this.handleServerRemoved(id));
+    this.configManager.on('serverAdded', (server: MCPServerConfig) => { void this.handleServerAdded(server); });
+    this.configManager.on('serverUpdated', (id: string, server: MCPServerConfig) => { void this.handleServerUpdated(id, server); });
+    this.configManager.on('serverRemoved', (id: string) => { void this.handleServerRemoved(id); });
   }
 
   async initialize(): Promise<void> {
@@ -69,7 +69,7 @@ export class MCPServerManager extends EventEmitter {
       throw new Error(`No command specified for local server ${config.id}`);
     }
 
-    const serverProcess = spawn(config.command, config.args || [], {
+    const serverProcess = spawn(config.command, config.args ?? [], {
       env: { ...process.env, ...config.env },
       cwd: config.cwd,
       stdio: ['pipe', 'pipe', 'pipe']
@@ -106,7 +106,7 @@ export class MCPServerManager extends EventEmitter {
     // Create MCP client connection using official SDK
     const transport = new StdioClientTransport({
       command: config.command,
-      args: config.args || [],
+      args: config.args ?? [],
       env: { ...process.env as Record<string, string>, ...config.env }
     });
 
@@ -246,7 +246,7 @@ export class MCPServerManager extends EventEmitter {
     }
   }
 
-  async callTool(serverId: string, name: string, parameters: Record<string, any>) {
+  async callTool(serverId: string, name: string, parameters: Record<string, unknown>) {
     const client = this.clients.get(serverId);
     if (!client) {
       throw new Error(`Server ${serverId} not connected`);
@@ -260,8 +260,8 @@ export class MCPServerManager extends EventEmitter {
   }
 
   private updateServerStatus(serverId: string, update: Partial<ServerStatus>): void {
-    const current = this.serverStatus.get(serverId) || { id: serverId, status: 'stopped' };
-    const updated = { ...current, ...update };
+    const current = this.serverStatus.get(serverId) ?? { id: serverId, status: 'stopped' };
+    const updated: ServerStatus = { ...current, ...update };
     this.serverStatus.set(serverId, updated);
     this.emit('statusChanged', serverId, updated);
   }
@@ -276,7 +276,7 @@ export class MCPServerManager extends EventEmitter {
     }
   }
 
-  private async handleServerUpdated(serverId: string, server: MCPServerConfig): Promise<void> {
+  private async handleServerUpdated(serverId: string, _server: MCPServerConfig): Promise<void> {
     // Restart server if it's currently running to pick up changes
     if (this.isRunning(serverId)) {
       try {
@@ -298,7 +298,7 @@ export class MCPServerManager extends EventEmitter {
     const runningServers = Array.from(this.servers.keys());
     
     await Promise.all(
-      runningServers.map(serverId => this.stopServer(serverId))
+      runningServers.map((serverId) => this.stopServer(serverId))
     );
     
     this.removeAllListeners();

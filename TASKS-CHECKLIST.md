@@ -99,11 +99,6 @@
 
 ## Phase 3: Server Integration Preparation
 
-### tRPC Client Setup
-- [ ] Configure tRPC client in `src/trpc/react.tsx`
-- [ ] Set up React Query provider
-- [ ] Test basic tRPC connection (use existing example endpoint)
-
 ### Type Definitions
 - [x] Create `src/types/chat.ts` with interfaces:
   - [x] `ChatMessage`
@@ -114,13 +109,7 @@
   - [ ] `ToolCall`
   - [ ] `SessionState`
 
-### Preparation for Server Integration
-- [ ] Add session ID generation utility
-- [ ] Create placeholder tRPC hooks:
-  - [ ] `api.mcp.getServers.useQuery()`
-  - [ ] `api.ai.getProviders.useQuery()`
-  - [ ] `api.chat.sendMessage.useMutation()`
-- [ ] Mock these hooks to return static data initially
+
 
 ## Phase 5: Server Implementation
 

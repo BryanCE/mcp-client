@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { Card, CardContent } from "~/components/ui/card";
-import type { ChatMessage } from "~/types/chat";
+import type { ChatMessage } from "~/types";
 import { cn } from "~/lib/utils";
 
 /**

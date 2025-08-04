@@ -1,6 +1,6 @@
 import { memo, useEffect, useRef, useState, useCallback } from "react";
 import { ScrollArea } from "~/components/ui/scroll-area";
-import type { ChatMessage } from "~/types/chat";
+import type { ChatMessage } from "~/types";
 import { MessageBubble } from "~/components/chat/MessageBubble";
 import AIResponse from "~/components/chat/AIResponse";
 import { Skeleton } from "~/components/ui/skeleton";
@@ -25,7 +25,6 @@ function MessageListBase({
   messages,
   isStreaming = false,
   streamingMessage = null,
-  showTypingIndicator = false,
   className,
   loadingCount = 0,
 }: MessageListProps) {
@@ -79,7 +78,7 @@ function MessageListBase({
         <div
           ref={(node) => {
             if (!node) return;
-            const viewport = node.querySelector('[data-radix-scroll-area-viewport]') as HTMLDivElement | null;
+            const viewport = node.querySelector<HTMLDivElement>('[data-radix-scroll-area-viewport]');
             if (viewport && viewportRef.current !== viewport) {
               viewportRef.current = viewport;
               viewport.addEventListener("scroll", handleScroll, { passive: true });

@@ -1,19 +1,20 @@
 "use client";
 
-import { useState, useCallback, useRef } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
+import { useState, useCallback, useRef, useEffect } from "react";
+import { Card, CardContent} from "~/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
-import { ScrollArea } from "~/components/ui/scroll-area";
 import { Textarea } from "~/components/ui/textarea";
 import { Button } from "~/components/ui/button";
 import { Badge } from "~/components/ui/badge";
 import { Loader2, Send, Paperclip, Wrench, Bot } from "lucide-react";
-import type { ChatMessage } from "~/types/chat";
+import type { ChatMessage } from "~/types";
 import { MessageList } from "~/components/chat/MessageList";
+import { useChatContext } from "~/components/chat/ChatContext";
 
 
 export default function ChatInterface() {
-  const [selectedProvider, setSelectedProvider] = useState<string>("");
+  const { providerId, setProviderId } = useChatContext();
+  const [selectedProvider, setSelectedProvider] = useState<string>(providerId);
   const [connectionStatus] = useState<string>("Disconnected");
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isStreaming, setIsStreaming] = useState<boolean>(false);
@@ -21,6 +22,17 @@ export default function ChatInterface() {
   const [inputValue, setInputValue] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  // keep local select in sync with context changes (e.g., restored on mount)
+  useEffect(() => {
+    setSelectedProvider(providerId);
+  }, [providerId]);
+
+  // when user changes local select, propagate to context (persisted in ChatContext)
+  useEffect(() => {
+    if (!selectedProvider) return;
+    setProviderId(selectedProvider);
+  }, [selectedProvider]);
 
   const handleSend = useCallback(() => {
     const content = inputValue.trim();

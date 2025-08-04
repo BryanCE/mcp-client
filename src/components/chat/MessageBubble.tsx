@@ -1,7 +1,7 @@
 import { memo } from "react";
 import { Card, CardContent } from "~/components/ui/card";
 import { Badge } from "~/components/ui/badge";
-import type { ChatMessage } from "~/types/chat";
+import type { ChatMessage } from "~/types";
 import { cn } from "~/lib/utils";
 
 type MessageBubbleProps = {
