@@ -40,30 +40,23 @@ export function ChatProvider({ children }: Props) {
 
   // Build provider instance from providerId (extensible)
   const provider = useMemo<ChatLLMProvider>(() => {
-    // In the client/browser we must NOT import server-only modules (like child_process).
-    // Use optional deps for Anthropic provider to avoid bundling server managers.
+    // The client selects provider by id; server manages keys and SDK initialization.
     if (providerId === "anthropic") {
-      const apiKey = typeof process !== "undefined" && process.env?.NEXT_PUBLIC_ANTHROPIC_API_KEY
-        ? process.env.NEXT_PUBLIC_ANTHROPIC_API_KEY
-        : "";
-      return new AnthropicMCPService(apiKey);
+      return new AnthropicMCPService();
     }
 
     if (providerId === "openrouter") {
-      const apiKey = typeof process !== "undefined" && process.env?.NEXT_PUBLIC_OPENROUTER_API_KEY
-        ? process.env.NEXT_PUBLIC_OPENROUTER_API_KEY
-        : "";
-      return new OpenRouterProvider(apiKey);
+      // Do NOT read API keys on the client; server should proxy these calls.
+      // OpenRouterProvider now has a 0-arg constructor (server will manage keys).
+      return new OpenRouterProvider();
     }
 
-    // Default fallback
-    const fallbackKey = typeof process !== "undefined" && process.env?.NEXT_PUBLIC_ANTHROPIC_API_KEY
-      ? process.env.NEXT_PUBLIC_ANTHROPIC_API_KEY
-      : "";
-    return new AnthropicMCPService(fallbackKey);
+    // Default fallback to anthropic with no client-side keys.
+    return new AnthropicMCPService();
   }, [providerId]);
 
-  const manager = useMemo(() => new ChatSessionManager(provider), [provider]);
+  // ChatSessionManager is client-side storage/UX only and does not take a provider argument.
+  const manager = useMemo(() => new ChatSessionManager(), []);
 
   const [sessionId, setSessionIdState] = useState<string>("");
   const [session, setSession] = useState<ChatSession | undefined>(undefined);
@@ -74,7 +67,7 @@ export function ChatProvider({ children }: Props) {
     const saved = typeof window !== "undefined" ? window.localStorage.getItem(SESSION_ID_STORAGE_KEY) : null;
     let sid = saved || "";
     if (!sid) {
-      // Create new session
+      // Create new session with explicit defaults
       const s = manager.createSession(undefined, [], {});
       sid = s.id;
       if (typeof window !== "undefined") {

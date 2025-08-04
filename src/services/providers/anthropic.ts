@@ -8,40 +8,53 @@ import type { ChatLLMProvider } from '~/services/providers/types';
 
 export class AnthropicMCPService extends EventEmitter implements ChatLLMProvider {
   readonly id = "anthropic" as const;
-  private anthropic: Anthropic;
+  private anthropic?: Anthropic;
   private serverManager?: MCPServerManager;
   private configManager?: MCPConfigManager;
   private availableTools: Map<string, MCPTool> = new Map();
 
-  constructor(
-    anthropicApiKey: string,
-    serverManager?: MCPServerManager,
-    configManager?: MCPConfigManager
-  ) {
+  constructor() {
     super();
-    
+    // Do not initialize Anthropic SDK or read API keys on the client.
+    // The SDK will be initialized server-side via initializeWithServerManagers.
+  }
+
+  /**
+   * Server-only initialization. Injects managers and initializes Anthropic SDK with server-side key.
+   */
+  async initializeWithServerManagers(anthropicApiKey: string, serverManager: MCPServerManager, configManager?: MCPConfigManager): Promise<void> {
+    this.serverManager = serverManager;
+    this.configManager = configManager;
+
     this.anthropic = new Anthropic({
       apiKey: anthropicApiKey,
     });
-    
-    this.serverManager = serverManager;
-    this.configManager = configManager;
-    
-    // Listen for server status changes to update available tools
-    // Wire MCP server events only when managers are provided (server-side)
-    if (this.serverManager) {
-      this.serverManager.on('serverStarted', (serverId) => { void this.updateToolsForServer(serverId); });
-      this.serverManager.on('serverStopped', (serverId) => { this.removeToolsForServer(serverId); });
+
+    // Wire MCP server events
+    this.serverManager.on('serverStarted', (serverId: string) => { void this.updateToolsForServer(serverId); });
+    this.serverManager.on('serverStopped', (serverId: string) => { this.removeToolsForServer(serverId); });
+
+    // Load tools from all running servers
+    const runningServers = Array.from(this.serverManager.getAllServerStatus().entries())
+      .filter(([_, status]) => status.status === 'running')
+      .map(([serverId]) => serverId);
+
+    for (const serverId of runningServers) {
+      await this.updateToolsForServer(serverId);
     }
+
+    console.log(`Initialized Anthropic MCP Service with ${this.availableTools.size} tools (server)`);
   }
 
+  /**
+   * Backward-compat: no-op client-side initializer.
+   */
   async initialize(): Promise<void> {
     if (!this.serverManager) {
-      // In browser/no server context, just initialize with zero tools
       console.log(`Initialized Anthropic MCP Service (client) with 0 tools`);
       return;
     }
-    // Load tools from all running servers
+    // If serverManager exists but anthropic not initialized (shouldn't happen in server), skip.
     const runningServers = Array.from(this.serverManager.getAllServerStatus().entries())
       .filter(([_, status]) => status.status === 'running')
       .map(([serverId]) => serverId);
@@ -142,6 +155,7 @@ export class AnthropicMCPService extends EventEmitter implements ChatLLMProvider
         stream: false // Explicitly set to false for type safety
       };
 
+      if (!this.anthropic) throw new Error("Anthropic SDK not initialized on client. Calls must go through server.");
       const response = await this.anthropic.messages.create(messageParams);
       
       // Handle tool use in the response
@@ -220,6 +234,7 @@ export class AnthropicMCPService extends EventEmitter implements ChatLLMProvider
     // Transform messages to Anthropic format
     const anthropicFollowUpMessages = followUpMessages.map(msg => convertToAnthropicFormat(msg));
 
+    if (!this.anthropic) throw new Error("Anthropic SDK not initialized on client. Calls must go through server.");
     return await this.anthropic.messages.create({
       model: 'claude-3-5-sonnet-20240620',
       max_tokens: 4096,
@@ -291,6 +306,7 @@ export class AnthropicMCPService extends EventEmitter implements ChatLLMProvider
     
     const tools = enableTools ? this.prepareToolsForClaude(allowedTools) : [];
 
+    if (!this.anthropic) throw new Error("Anthropic SDK not initialized on client. Calls must go through server.");
     const stream = this.anthropic.messages
       .stream({
         model,
@@ -341,6 +357,7 @@ export class AnthropicMCPService extends EventEmitter implements ChatLLMProvider
     // Transform messages to Anthropic format
     const anthropicMessages = messages.map(msg => convertToAnthropicFormat(msg));
     
+    if (!this.anthropic) throw new Error("Anthropic SDK not initialized on client. Calls must go through server.");
     const response = await this.anthropic.messages.countTokens({
       model: 'claude-3-5-sonnet-20240620',
       messages: anthropicMessages as Anthropic.MessageParam[] // narrow unknown -> sdk-accepted shape

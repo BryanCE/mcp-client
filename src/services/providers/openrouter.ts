@@ -11,9 +11,10 @@ export class OpenRouterProvider extends EventEmitter implements ChatLLMProvider 
   readonly id = "openrouter" as const;
   private readonly apiKey: string;
 
-  constructor(apiKey: string) {
+  constructor() {
     super();
-    this.apiKey = apiKey;
+    // Do not read API keys on the client; server will proxy and inject as needed.
+    this.apiKey = "";
   }
 
   async sendMessage(

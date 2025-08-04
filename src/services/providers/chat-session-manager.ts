@@ -1,13 +1,12 @@
 import type { ChatSession } from "~/types";
-import type { ChatLLMProvider } from "~/services/providers/types";
+import { api } from "~/trpc/react";
+import type { ProviderId } from "~/services/providers/types";
 
 export class ChatSessionManager {
   private sessions: Map<string, ChatSession> = new Map<string, ChatSession>();
-  private provider: ChatLLMProvider;
   private readonly storageKey = "chat_sessions_v1";
 
-  constructor(provider: ChatLLMProvider) {
-    this.provider = provider;
+  constructor() {
     // Attempt hydration on construction (no-op on server)
     this.hydrateFromStorage();
   }
@@ -76,39 +75,25 @@ export class ChatSessionManager {
 
     let responseContent = '';
 
-    if (options.stream) {
-      const finalMessage = await this.provider.streamMessage(
-        session.messages,
-        {
-          ...session.settings,
-          allowedTools,
-          onText: (text: string) => {
-            responseContent += text;
-            options.onText?.(text);
-          },
-          onToolUse: options.onToolUse,
-          onToolResult: options.onToolResult
-        }
-      ) as { content?: Array<{ type: string; text?: string }> };
+    // tRPC client usage via utils.client (Context7 docs: use utils.client.<proc>.mutate for imperative calls)
+    const utils = api.useUtils();
+    const stored = typeof window !== "undefined" ? window.localStorage.getItem("chat_provider_id_v1") : null;
+    const providerId: ProviderId = stored === "openrouter" ? "openrouter" : "anthropic";
 
-      // Extract text content from final message (defensive narrowing)
-      const textBlocks = Array.isArray(finalMessage?.content)
-        ? finalMessage!.content.filter((block: { type: string }) => block.type === 'text')
-        : [];
-      responseContent = textBlocks.map((block: { text?: string }) => block.text ?? "").join('');
-    } else {
-      const response = await this.provider.sendMessage(
-        session.messages,
-        {
-          ...session.settings,
-          allowedTools
-        }
-      ) as { content?: Array<{ type: string; text?: string }> };
+    const sendResult = await utils.client.chat.send.mutate({
+      providerId,
+      sessionId,
+      messages: session.messages as any,
+      settings: {
+        ...session.settings,
+        allowedTools,
+      },
+      stream: !!options.stream,
+    });
 
-      if (Array.isArray(response?.content)) {
-        const textBlocks = response.content.filter((block: { type: string }) => block.type === 'text');
-        responseContent = textBlocks.map((block: { text?: string }) => block.text ?? "").join('');
-      }
+    if (Array.isArray(sendResult?.content)) {
+      const textBlocks = sendResult.content.filter((b: { type: string }) => b.type === "text");
+      responseContent = textBlocks.map((b: { text?: string }) => b.text ?? "").join("");
     }
 
     // Add assistant response to session
@@ -125,12 +110,12 @@ export class ChatSessionManager {
       session.title = message.substring(0, 50) + (message.length > 50 ? '...' : '');
     }
 
-    const result = {
+    const finalResult = {
       session,
       response: responseContent
     };
     this.persistToStorage();
-    return result;
+    return finalResult;
   }
 
   updateSessionSettings(

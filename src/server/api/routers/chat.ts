@@ -8,7 +8,7 @@ import {
 import { AnthropicMCPService } from "~/services/providers/anthropic";
 import { OpenRouterProvider } from "~/services/providers/openrouter";
 
-// Input schemas strictly reuse the shared types
+// Define input schema (reusing shared types)
 const SendInputSchema = z.object({
   providerId: z.enum(["anthropic", "openrouter"]),
   sessionId: z.string().min(1),

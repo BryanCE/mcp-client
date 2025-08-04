@@ -1,6 +1,7 @@
 import type { AnthropicMessageParam, ConversationMessage, MCPTool } from "~/types";
 
-export type ProviderId = "anthropic" | string;
+export const PROVIDER_IDS = ["anthropic", "openrouter"] as const;
+export type ProviderId = typeof PROVIDER_IDS[number];
 
 export type SendMessageOptions = {
   model?: string;
