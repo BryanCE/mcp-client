@@ -36,7 +36,7 @@ export default function HomePage() {
         >
           <ResizablePanel
             defaultSize={22}
-            minSize={16}
+            minSize={18}
             maxSize={34}
             className="min-w-0 min-h-0"
           >
@@ -63,7 +63,7 @@ export default function HomePage() {
 
           <ResizablePanel
             defaultSize={32}
-            minSize={22}
+            minSize={20}
             maxSize={40}
             className="min-w-0 min-h-0"
           >
