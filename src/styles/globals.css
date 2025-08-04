@@ -169,17 +169,3 @@
   border-radius: 0.375rem;
 }
 
-/* Typing indicator animation (used by TypingIndicator.tsx) */
-@layer utilities {
-  @keyframes typing-dot {
-    0% { transform: translateY(0); opacity: .5; }
-    25% { transform: translateY(-3px); opacity: 1; }
-    50% { transform: translateY(0); opacity: .5; }
-    100% { transform: translateY(0); opacity: .35; }
-  }
-  .animate-typing-dot {
-    animation-name: typing-dot;
-    animation-timing-function: ease-in-out;
-    animation-iteration-count: infinite;
-  }
-}

@@ -2,7 +2,6 @@
 
 import * as React from "react";
 import { useState } from "react";
-import { ResizablePanel, ResizablePanelGroup } from "~/components/ui/resizable";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { ScrollArea } from "~/components/ui/scroll-area";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
@@ -22,11 +21,8 @@ export default function RightPanel() {
     [],
   );
 
-  // Ensure ResizablePanel is always rendered within a ResizablePanelGroup to satisfy library requirements
   return (
-    <ResizablePanelGroup direction="horizontal" className="h-full w-full">
-      <ResizablePanel defaultSize={25} minSize={20} maxSize={40}>
-        <div className="h-full border-l bg-muted/10">
+    <div className="h-full border-l bg-muted/10">
         <Tabs defaultValue="tools" className="flex h-full flex-col">
           <div className="mx-4 mt-4 overflow-x-auto">
             <TabsList className="w-max min-w-full flex-nowrap">
@@ -173,8 +169,6 @@ export default function RightPanel() {
             </ScrollArea>
           </TabsContent>
         </Tabs>
-        </div>
-      </ResizablePanel>
-    </ResizablePanelGroup>
+    </div>
   );
 }

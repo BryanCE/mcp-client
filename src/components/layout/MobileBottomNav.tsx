@@ -5,7 +5,6 @@ import { Button } from "~/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "~/components/ui/sheet";
 import LeftNav from "~/components/layout/LeftNav";
 import RightPanel from "~/components/layout/RightPanel";
-import { ResizablePanelGroup } from "~/components/ui/resizable";
 import { MessageSquareText, PanelLeft, PanelRight } from "lucide-react";
 
 type MobileBottomNavProps = {
@@ -74,10 +73,7 @@ export default function MobileBottomNav({ className }: MobileBottomNavProps) {
                 <SheetTitle>Information</SheetTitle>
               </SheetHeader>
               <div className="h-[calc(100vh-56px)]">
-                {/* Ensure RightPanel's ResizablePanel is wrapped in a PanelGroup to satisfy react-resizable-panels requirement */}
-                <ResizablePanelGroup direction="horizontal" className="h-full w-full">
-                  <RightPanel />
-                </ResizablePanelGroup>
+                <RightPanel />
               </div>
             </SheetContent>
           </Sheet>

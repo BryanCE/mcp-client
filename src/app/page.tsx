@@ -4,7 +4,7 @@ import * as React from "react";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "~/components/ui/resizable";
 import LeftNav from "~/components/layout/LeftNav";
 import RightPanel from "~/components/layout/RightPanel";
-import ChatInterface from "~/components/layout/ChatInterface";
+import ChatInterface from "~/components/chat/ChatInterface";
 import Header from "~/components/layout/Header";
 import MobileBottomNav from "~/components/layout/MobileBottomNav";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "~/components/ui/sheet";

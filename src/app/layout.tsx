@@ -5,7 +5,6 @@ import { Geist } from "next/font/google";
 
 import { TRPCReactProvider } from "~/trpc/react";
 import { ThemeProvider } from "~/components/providers/ThemeProvider";
-import MobileBottomNav from "~/components/layout/MobileBottomNav";
 
 export const metadata: Metadata = {
   title: "MCP Client",
